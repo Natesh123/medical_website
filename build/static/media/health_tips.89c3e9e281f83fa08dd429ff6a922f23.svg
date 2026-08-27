@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 300 180" fill="none">
+  <rect width="300" height="180" rx="16" fill="#E6F7FF" />
+  <g fill="#0779C6" font-family="Arial, Helvetica, sans-serif">
+    <text x="20" y="40" font-size="20" font-weight="700">Daily Health Tips</text>
+    <text x="20" y="72" font-size="14">Hydration · Sleep · Exercise</text>
+  </g>
+  <circle cx="240" cy="50" r="30" fill="#D0F2FF" />
+  <rect x="210" y="95" width="70" height="14" rx="6" fill="#D0F2FF" />
+</svg>

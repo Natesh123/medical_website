@@ -1,0 +1,5 @@
+export const ALL_LOGS_REQUEST = "ALL_LOGS_REQUEST";
+export const ALL_LOGS_SUCCESS = "ALL_LOGS_SUCCESS";
+export const ALL_LOGS_FAIL = "ALL_LOGS_FAIL";
+
+export const CLEAR_ERRORS = "CLEAR_ERRORS";

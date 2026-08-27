@@ -1,0 +1,86 @@
+.banner-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-slide {
+    outline: none;
+}
+
+.banner-slide {
+    position: relative;
+}
+
+.banner-overlay {
+    background: linear-gradient(180deg, rgba(2,6,23,0.15), rgba(2,6,23,0.2));
+    z-index: 1;
+}
+
+/* Remove default slick arrow pseudo-elements to use custom SVG icons */
+.slick-prev::before,
+.slick-next::before {
+    display: none;
+}
+
+/* Mobile responsive dots */
+.slick-dots {
+    bottom: 15px;
+    z-index: 2;
+}
+
+.slick-dots li {
+    margin: 0 3px;
+}
+
+.slick-dots li button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.slick-dots li button:before {
+    display: none;
+}
+
+.slick-dots li.slick-active button {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.2);
+}
+
+.banner-slide img {
+    display: block;
+}
+
+/* Mobile specific styles */
+@media (max-width: 640px) {
+    .slick-dots {
+        bottom: 10px;
+    }
+    
+    .slick-dots li {
+        margin: 0 2px;
+    }
+    
+    .slick-dots li button {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .slick-dots li button {
+        background: white;
+        border: 2px solid black;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .slick-dots li button {
+        transition: none;
+    }
+}
