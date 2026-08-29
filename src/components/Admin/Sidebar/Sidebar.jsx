@@ -15,6 +15,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import HistoryIcon from '@mui/icons-material/History';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import Avatar from '@mui/material/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
 import './Sidebar.css';
@@ -51,6 +52,13 @@ const sections = [
                 ]
             },
             {
+                icon: <AccountBalanceIcon />,
+                label: "GST",
+                ref: "/admin/gst",
+                activeTab: 10,
+                permission: "gst_manage"
+            },
+            {
                 icon: <InventoryIcon />,
                 label: "Products",
                 ref: "/admin/products",
@@ -63,13 +71,6 @@ const sections = [
                 ref: "/admin/orders",
                 activeTab: 2,
                 permission: "orders_manage"
-            },
-            {
-                icon: <AccountBalanceIcon />,
-                label: "GST",
-                ref: "/admin/gst",
-                activeTab: 10,
-                permission: "gst_manage"
             },
             {
                 icon: <VideoLibraryIcon />,
@@ -140,6 +141,12 @@ const sections = [
                 ref: "/admin/logs",
                 activeTab: 12,
                 permission: "logs_manage"
+            },
+            {
+                icon: <AssessmentIcon />,
+                label: "Reports",
+                ref: "/admin/reports",
+                activeTab: 15
             }
         ]
     }

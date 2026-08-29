@@ -8,6 +8,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { getBanners } from '../../../actions/bannerAction';
 import { CircularProgress, Box } from '@mui/material';
+import ayurvedaBannerImg from '../../../assets/images/Home/ayurveda_banner.jpg';
 
 export const PreviousBtn = ({ className, onClick }) => (
   <div className={`${className} z-20 !flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/30 hover:scale-110 transition-all duration-500 left-4 sm:left-12 cursor-pointer`} onClick={onClick}>
@@ -67,9 +68,9 @@ const Banner = () => {
 
   // Fallback if no banners are added yet from admin panel
   const displayBanners = banners && banners.length > 0 ? banners : [{
-      image: { url: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1600&h=900&fit=crop' },
-      title: "PIONEERING WELLNESS",
-      subtitle: "Experience the next generation of clinical procurement with lightning-fast delivery and expert-verified medical supplies.",
+      image: { url: ayurvedaBannerImg },
+      title: "TRADITIONAL AYURVEDA",
+      subtitle: "Experience the healing power of authentic Ayurvedic wellness with our premium, expert-verified medical supplies.",
       _id: 'default'
   }];
 

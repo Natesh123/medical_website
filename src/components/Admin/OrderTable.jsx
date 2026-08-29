@@ -13,16 +13,23 @@ import {
     Typography,
     TablePagination,
     Box,
-    CircularProgress
+    CircularProgress,
+    FormControl,
+    Select,
+    MenuItem,
+    TextField,
+    Button
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Swal from 'sweetalert2';
 import MetaData from '../Layouts/MetaData';
 
 import { getAllOrders, clearErrors, deleteOrder } from '../../actions/orderAction';
 import { useSnackbar } from 'notistack';
 import { DELETE_ORDER_RESET } from '../../constants/orderConstants';
+import aayushiLogo from '../../assets/images/logo1.jpg';
 import UpdateOrder from './UpdateOrder';
 
 const OrderTable = () => {
@@ -35,8 +42,97 @@ const OrderTable = () => {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    
+    // Filter States
+    const [filterStatus, setFilterStatus] = useState('All');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterDate, setFilterDate] = useState('');
+
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+    const generatePDF = (order) => {
+        const printWindow = window.open('', '_blank');
+        const itemsHtml = order.orderItems.map(item => `
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.name}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">₹${item.price.toFixed(2)}</td>
+            </tr>
+        `).join('');
+
+        const html = `
+            <html>
+                <head>
+                    <title>Invoice - ${order._id.slice(-5).toUpperCase()}</title>
+                    <base href="${window.location.origin}">
+                    <style>
+                        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #333; }
+                        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #16a34a; padding-bottom: 20px; margin-bottom: 20px; }
+                        .header-left { display: flex; align-items: center; gap: 15px; }
+                        .logo-container { width: 60px; height: 60px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+                        .logo-container img { width: 100%; height: 100%; object-fit: contain; }
+                        .header h1 { color: #16a34a; margin: 0; font-size: 28px; }
+                        .details { display: flex; justify-content: space-between; margin-bottom: 40px; line-height: 1.6; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+                        th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; color: #64748b; font-size: 14px; text-transform: uppercase; }
+                        .total { text-align: right; font-size: 22px; font-weight: bold; color: #16a34a; padding-top: 20px; border-top: 2px solid #ddd; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="header-left">
+                            <div class="logo-container">
+                                <img src="${aayushiLogo}" alt="Shree Kishan Aayushi Logo" />
+                            </div>
+                            <h1>SHREE KISHAN <span style="color: #f59e0b;">AAYUSHI</span></h1>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong>Order Invoice</strong><br/>
+                            <span style="color: #64748b;">ID: ${order._id.slice(-5).toUpperCase()}</span><br/>
+                            Date: ${new Date(order.createdAt).toLocaleDateString()}
+                        </div>
+                    </div>
+                    <div class="details">
+                        <div>
+                            <strong style="color: #16a34a; font-size: 18px;">Billed To:</strong><br/>
+                            <strong>${order.user?.name || 'Customer'}</strong><br/>
+                            ${order.shippingInfo?.address || 'N/A'}<br/>
+                            ${order.shippingInfo?.city || 'N/A'}, ${order.shippingInfo?.state || ''} - ${order.shippingInfo?.pincode || ''}<br/>
+                            Phone: ${order.shippingInfo?.phoneNo || 'N/A'}
+                        </div>
+                        <div style="text-align: right;">
+                            <strong>Payment Status:</strong> <span style="color: ${order.paymentInfo?.status === 'succeeded' ? '#16a34a' : '#d97706'}">${order.paymentInfo?.status || 'Pending'}</span><br/>
+                            <strong>Order Status:</strong> ${order.orderStatus}
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th style="text-align: center;">Quantity</th>
+                                <th style="text-align: right;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
+                    <div class="total">
+                        Total Amount: ₹${(order.totalPrice || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    </div>
+                </body>
+            </html>
+        `;
+        
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 250);
+    };
 
     useEffect(() => {
         if (error) {
@@ -75,6 +171,34 @@ const OrderTable = () => {
         });
     };
 
+    const applyFilters = (data) => {
+        if (!data || data.length === 0) return [];
+        let filtered = [...data];
+
+        if (filterStatus !== 'All') {
+            filtered = filtered.filter(o => o.orderStatus === filterStatus);
+        }
+
+        if (searchTerm.trim() !== '') {
+            const term = searchTerm.toLowerCase().trim();
+            filtered = filtered.filter(o => 
+                String(o._id).toLowerCase().includes(term) ||
+                String(o.user?.name || '').toLowerCase().includes(term)
+            );
+        }
+
+        if (filterDate) {
+            filtered = filtered.filter(o => {
+                const orderDate = new Date(o.createdAt).toISOString().split('T')[0];
+                return orderDate === filterDate;
+            });
+        }
+
+        return filtered;
+    };
+
+    const filteredOrders = applyFilters(orders);
+
     return (
         <Box sx={{ minHeight: '100vh', py: 4 }}>
             <MetaData title="Admin Panel | Shree Kishan Aayushi" />
@@ -88,6 +212,56 @@ const OrderTable = () => {
                     All <span style={{ color: '#16a34a' }}>Orders</span>
                 </Typography>
             </Box>
+
+            <div className="flex flex-wrap gap-3 p-4 bg-white border border-slate-100 rounded-3xl mb-6 shadow-sm items-center">
+                <FormControl size="small" sx={{ flex: 1, minWidth: '130px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}>
+                    <Select
+                        value={filterStatus}
+                        onChange={(e) => { setFilterStatus(e.target.value); setPage(0); }}
+                        displayEmpty
+                        sx={{ color: '#475569', fontWeight: 600, fontSize: '13px' }}
+                    >
+                        <MenuItem value="All">All Status</MenuItem>
+                        <MenuItem value="Processing">Processing</MenuItem>
+                        <MenuItem value="Shipped">Shipped</MenuItem>
+                        <MenuItem value="Delivered">Delivered</MenuItem>
+                    </Select>
+                </FormControl>
+                
+                <TextField
+                    placeholder="Search Order ID, Name..."
+                    variant="outlined"
+                    size="small"
+                    value={searchTerm}
+                    onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
+                    sx={{ flex: 1.5, minWidth: '180px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <TextField
+                    type="date"
+                    variant="outlined"
+                    size="small"
+                    value={filterDate}
+                    onChange={(e) => { setFilterDate(e.target.value); setPage(0); }}
+                    sx={{ flex: 1, minWidth: '140px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <Button 
+                    variant="contained" 
+                    color="error" 
+                    size="small"
+                    disableElevation
+                    onClick={() => {
+                        setSearchTerm('');
+                        setFilterStatus('All');
+                        setFilterDate('');
+                        setPage(0);
+                    }}
+                    sx={{ fontWeight: 700, borderRadius: '8px', textTransform: 'none', height: '40px', px: 3, ml: 'auto' }}
+                >
+                    Clear
+                </Button>
+            </div>
 
             <Card sx={{
                 borderRadius: '35px',
@@ -134,13 +308,13 @@ const OrderTable = () => {
                             <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} align="center" sx={{ py: 12 }}>
-                                            <CircularProgress size={30} thickness={5} sx={{ color: '#16a34a' }} />
-                                            <Typography sx={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '10px', mt: 3, color: '#16a34a' }}>Loading...</Typography>
+                                        <TableCell colSpan={7} align="center" sx={{ py: 12 }}>
+                                            <CircularProgress size={24} sx={{ color: '#16a34a' }} />
+                                            <Typography sx={{ mt: 2, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '10px', color: 'rgba(2, 6, 23, 0.3)' }}>Loading...</Typography>
                                         </TableCell>
                                     </TableRow>
-                                ) : orders?.length > 0 ? (
-                                    orders
+                                ) : filteredOrders?.length > 0 ? (
+                                    filteredOrders
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((order) => (
                                             <TableRow
@@ -153,7 +327,7 @@ const OrderTable = () => {
                                             >
                                                 <TableCell align="center">
                                                     <Typography sx={{ fontSize: '11px', color: 'rgba(2, 6, 23, 0.2)', fontWeight: 900 }}>
-                                                        {order._id.slice(-8).toUpperCase()}
+                                                        {order._id.slice(-5).toUpperCase()}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align="left">
@@ -214,6 +388,19 @@ const OrderTable = () => {
                                                 <TableCell align="center">
                                                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1.5 }}>
                                                         <IconButton
+                                                            onClick={() => generatePDF(order)}
+                                                            title="Download Invoice PDF"
+                                                            sx={{
+                                                                color: '#2563eb',
+                                                                background: '#eff6ff',
+                                                                borderRadius: '12px',
+                                                                '&:hover': { background: '#2563eb', color: '#fff' },
+                                                                transition: 'all 0.3s ease'
+                                                            }}
+                                                        >
+                                                            <PictureAsPdfIcon sx={{ fontSize: 18 }} />
+                                                        </IconButton>
+                                                        <IconButton
                                                                 onClick={() => handleEdit(order)}
                                                                 sx={{
                                                                     color: '#16a34a',
@@ -254,7 +441,7 @@ const OrderTable = () => {
 
                     <TablePagination
                         component="div"
-                        count={orders?.length || 0}
+                        count={filteredOrders?.length || 0}
                         page={page}
                         onPageChange={(e, newPage) => setPage(newPage)}
                         rowsPerPage={rowsPerPage}

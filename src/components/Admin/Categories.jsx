@@ -250,39 +250,54 @@ const Categories = () => {
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-                    <div className="relative group">
-                        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300 text-sm group-focus-within:text-green-600 transition-colors" />
-                        <input
-                            type="text"
-                            placeholder="Search Category..."
-                            value={searchTerm}
-                            onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
-                            className="pl-11 pr-6 py-3.5 bg-white border border-slate-100 rounded-[20px] text-[11px] font-semibold uppercase tracking-widest text-slate-950 outline-none w-64 shadow-sm hover:border-blue-100 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 transition-all"
-                        />
-                    </div>
-
-                        <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            onClick={handleOpenAddModal}
-                            sx={{
-                                borderRadius: '20px',
-                                textTransform: 'uppercase',
-                                fontWeight: 900,
-                                letterSpacing: '0.1em',
-                                fontSize: '11px',
-                                px: 4,
-                                py: 2,
-                                background: '#16a34a',
-                                boxShadow: '0 15px 30px rgba(22, 163, 74, 0.15)',
-                                '&:hover': { background: '#14532d', transform: 'translateY(-2px)' },
-                                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-                            }}
-                        >
-                            Add Category
-                        </Button>
                 </Box>
+
+            <div className="flex flex-wrap gap-3 p-4 bg-white border border-slate-100 rounded-3xl mb-6 shadow-sm items-center">
+                <TextField
+                    placeholder="Search Categories (Name, ID)..."
+                    variant="outlined"
+                    size="small"
+                    value={searchTerm}
+                    onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
+                    sx={{ flex: 1.5, minWidth: '200px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <Button 
+                    variant="contained" 
+                    color="error" 
+                    size="small"
+                    disableElevation
+                    onClick={() => {
+                        setSearchTerm('');
+                        setPage(0);
+                    }}
+                    sx={{ fontWeight: 700, borderRadius: '8px', textTransform: 'none', height: '40px', px: 3, ml: 'auto' }}
+                >
+                    Clear
+                </Button>
+            </div>
+
+            <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={handleOpenAddModal}
+                    sx={{
+                        borderRadius: '20px',
+                        textTransform: 'uppercase',
+                        fontWeight: 900,
+                        letterSpacing: '0.1em',
+                        fontSize: '11px',
+                        px: 4,
+                        py: 2,
+                        background: '#16a34a',
+                        boxShadow: '0 15px 30px rgba(22, 163, 74, 0.15)',
+                        '&:hover': { background: '#14532d', transform: 'translateY(-2px)' },
+                        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+                    }}
+                >
+                    Add Category
+                </Button>
             </Box>
 
             <Card sx={{

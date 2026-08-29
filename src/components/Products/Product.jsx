@@ -117,11 +117,11 @@ const Product = ({ _id, id, name, images, ratings, numOfReviews, price, cuttedPr
 
     return (
         <>
-            <div className="group relative bg-white rounded-[2.5rem] p-5 border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-slate-200/60 hover:-translate-y-2 transition-all duration-500 flex flex-col h-full overflow-hidden">
+            <div className="group relative bg-white rounded-2xl p-3 sm:p-4 border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 flex flex-row items-center gap-4 h-full overflow-hidden w-full">
 
                 {/* Image Container */}
-                <Link to={`/product/${productId}`} className="contents">
-                    <div className="relative w-full h-[220px] bg-gradient-to-b from-slate-50 to-white rounded-[1.5rem] p-6 flex items-center justify-center overflow-hidden mb-5 group/img cursor-pointer border border-slate-50">
+                <Link to={`/product/${productId}`} className="shrink-0">
+                    <div className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] bg-slate-50/50 rounded-xl p-2 flex items-center justify-center overflow-hidden group/img cursor-pointer">
                         {cuttedPrice > price && (
                             <div className="absolute top-4 left-4 bg-red-500 text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full z-10 shadow-lg shadow-red-500/30">
                                 {Math.round(((cuttedPrice - price) / cuttedPrice) * 100)}% OFF
@@ -143,13 +143,13 @@ const Product = ({ _id, id, name, images, ratings, numOfReviews, price, cuttedPr
                 </Link>
 
                 {/* Content Info */}
-                <div className="flex flex-col flex-1 text-left px-2 pb-2 mt-2">
+                <div className="flex flex-col flex-1 text-left min-w-0">
                     {/* Category Tag Badge */}
-                    <div className="mb-3 flex items-center">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[9px] font-semibold uppercase tracking-[0.2em] border ${
+                    <div className="mb-1 flex items-center">
+                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-widest border ${
                             subCategoryType === 'Prescription'
-                                ? 'bg-indigo-50 text-indigo-700 border-indigo-100 shadow-sm shadow-indigo-100/50'
-                                : 'bg-emerald-50 text-emerald-600 border-emerald-100 shadow-sm shadow-emerald-100/50'
+                                ? 'bg-indigo-50 text-indigo-700 border-indigo-100'
+                                : 'bg-emerald-50 text-emerald-600 border-emerald-100'
                         }`}>
                             {subCategoryType === 'Prescription' ? (
                                 <span className="bg-indigo-600 text-white text-[7.5px] px-1 py-[2px] rounded-sm leading-none tracking-normal">Rx</span>
@@ -160,41 +160,43 @@ const Product = ({ _id, id, name, images, ratings, numOfReviews, price, cuttedPr
                         </span>
                     </div>
 
-                    <Link to={`/product/${productId}`}>
-                        <h2 className="text-slate-900 font-semibold text-[1.05rem] leading-snug line-clamp-2 hover:text-[#d97706] transition-colors">
+                    <Link to={`/product/${productId}`} className="truncate">
+                        <h2 className="text-slate-800 font-semibold text-[14px] sm:text-[15px] leading-snug truncate hover:text-[#d97706] transition-colors mb-1">
                             {name}
                         </h2>
                     </Link>
 
                     {/* Bottom Section: Price & Action */}
-                    <div className="mt-auto pt-8">
-                        <div className="flex flex-col mb-6">
-                            {cuttedPrice > price && (
-                                <span className="text-[13px] font-semibold text-slate-400 line-through mb-1">
-                                    ₹{cuttedPrice.toLocaleString()}
-                                </span>
-                            )}
-                            <div className="flex items-start">
-                                <span className="text-sm font-semibold text-slate-900 mt-[3px] mr-[1px]">₹</span>
-                                <span className="text-3xl font-semibold text-slate-900 leading-none tracking-tighter">{price.toLocaleString()}</span>
+                    <div className="mt-auto pt-1">
+                        <div className="flex flex-col mb-3">
+                            <div className="flex items-center gap-2">
+                                <div className="flex items-start">
+                                    <span className="text-xs font-semibold text-slate-800 mt-[2px] mr-[1px]">₹</span>
+                                    <span className="text-2xl font-bold text-slate-900 leading-none tracking-tight">{price.toLocaleString()}</span>
+                                </div>
+                                {cuttedPrice > price && (
+                                    <span className="text-[11px] font-medium text-slate-500 line-through mt-1">
+                                        ₹{cuttedPrice.toLocaleString()}
+                                    </span>
+                                )}
                             </div>
                         </div>
 
                         {/* Large Action Button */}
                         {itemInCart ? (
-                            <div className="flex items-center justify-between w-full h-14 bg-emerald-50 rounded-2xl px-2 border-2 border-emerald-100/50 shadow-inner">
+                            <div className="flex items-center justify-between w-full h-11 bg-white rounded-xl border border-[#d97706] overflow-hidden">
                                 <button
                                     onClick={decreaseQty}
-                                    className="w-10 h-10 rounded-xl bg-white text-emerald-600 flex items-center justify-center text-xl font-semibold shadow-sm hover:bg-emerald-600 hover:text-white transition-colors"
+                                    className="w-10 h-full bg-[#fef3c7] text-[#d97706] flex items-center justify-center text-lg font-bold hover:bg-[#d97706] hover:text-white transition-colors"
                                 >
                                     -
                                 </button>
-                                <span className="text-base font-semibold text-emerald-900 mx-2">
+                                <span className="text-sm font-bold text-[#d97706] mx-2">
                                     {itemInCart.quantity}
                                 </span>
                                 <button
                                     onClick={increaseQty}
-                                    className="w-10 h-10 rounded-xl bg-white text-emerald-600 flex items-center justify-center text-xl font-semibold shadow-sm hover:bg-emerald-600 hover:text-white transition-colors"
+                                    className="w-10 h-full bg-[#fef3c7] text-[#d97706] flex items-center justify-center text-lg font-bold hover:bg-[#d97706] hover:text-white transition-colors"
                                 >
                                     +
                                 </button>
@@ -203,9 +205,9 @@ const Product = ({ _id, id, name, images, ratings, numOfReviews, price, cuttedPr
                             <button
                                 onClick={addToCartHandler}
                                 disabled={stock < 1}
-                                className={`w-full h-14 rounded-2xl text-xs font-semibold uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-3 ${stock < 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-[#d97706] text-white hover:bg-[#b45309] shadow-[0_10px_20px_rgba(217,119,6,0.25)] hover:shadow-[0_15px_30px_rgba(217,119,6,0.35)] hover:-translate-y-1 active:translate-y-0'}`}
+                                className={`w-full h-11 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${stock < 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-[#d97706] text-white hover:bg-[#b45309] shadow-md hover:shadow-lg'}`}
                             >
-                                {stock >= 1 && <ShoppingCartIcon sx={{ fontSize: 20 }} />}
+                                {stock >= 1 && <ShoppingCartIcon sx={{ fontSize: 16 }} />}
                                 {stock < 1 ? 'Out of Stock' : 'Add to Cart'}
                             </button>
                         )}

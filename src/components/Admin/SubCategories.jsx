@@ -51,6 +51,7 @@ const SubCategories = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterCategory, setFilterCategory] = useState('All');
 
     // Modal states
     const [openAddModal, setOpenAddModal] = useState(false);
@@ -72,13 +73,26 @@ const SubCategories = () => {
     const { categories } = useSelector((state) => state.categories);
 
     const filteredSubCategories = (subCategories || []).filter((sub) => {
+        let match = true;
+
+        if (filterCategory !== 'All') {
+            if (String(sub.category?._id) !== String(filterCategory) && String(sub.category?.name) !== String(filterCategory) && String(sub.category) !== String(filterCategory)) {
+                match = false;
+            }
+        }
+
         const term = searchTerm.trim().toLowerCase();
-        if (!term) return true;
-        return (
-            String(sub.name || '').toLowerCase().includes(term) ||
-            String(sub.category?.name || '').toLowerCase().includes(term) ||
-            String(sub.description || '').toLowerCase().includes(term)
-        );
+        if (term) {
+            if (!(
+                String(sub.name || '').toLowerCase().includes(term) ||
+                String(sub.category?.name || '').toLowerCase().includes(term) ||
+                String(sub.description || '').toLowerCase().includes(term)
+            )) {
+                match = false;
+            }
+        }
+
+        return match;
     });
 
     useEffect(() => {
@@ -258,18 +272,49 @@ const SubCategories = () => {
                         All <span style={{ color: '#16a34a' }}>Sub-Categories</span>
                     </Typography>
                 </Box>
+            </Box>
 
-                <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-                    <div className="relative group">
-                        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300 text-sm group-focus-within:text-green-600 transition-colors" />
-                        <input
-                            type="text"
-                            placeholder="Search Sub-Category..."
-                            value={searchTerm}
-                            onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
-                            className="pl-11 pr-6 py-3.5 bg-white border border-slate-100 rounded-[20px] text-[11px] font-semibold uppercase tracking-widest text-slate-950 outline-none w-64 shadow-sm hover:border-blue-100 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 transition-all"
-                        />
-                    </div>
+            <div className="flex flex-wrap gap-3 p-4 bg-white border border-slate-100 rounded-3xl mb-6 shadow-sm items-center">
+                <FormControl size="small" sx={{ flex: 1, minWidth: '160px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}>
+                    <Select
+                        value={filterCategory}
+                        onChange={(e) => { setFilterCategory(e.target.value); setPage(0); }}
+                        displayEmpty
+                        sx={{ color: '#475569', fontWeight: 600, fontSize: '13px' }}
+                    >
+                        <MenuItem value="All">All Categories</MenuItem>
+                        {categories?.map(cat => (
+                            <MenuItem key={cat._id} value={cat._id}>{cat.name}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <TextField
+                    placeholder="Search Sub-Category..."
+                    variant="outlined"
+                    size="small"
+                    value={searchTerm}
+                    onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
+                    sx={{ flex: 1.5, minWidth: '200px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <Button 
+                    variant="contained" 
+                    color="error" 
+                    size="small"
+                    disableElevation
+                    onClick={() => {
+                        setSearchTerm('');
+                        setFilterCategory('All');
+                        setPage(0);
+                    }}
+                    sx={{ fontWeight: 700, borderRadius: '8px', textTransform: 'none', height: '40px', px: 3, ml: 'auto' }}
+                >
+                    Clear
+                </Button>
+            </div>
+
+            <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
 
                         <Button
                             variant="contained"
@@ -292,7 +337,6 @@ const SubCategories = () => {
                             Add Sub-Category
                         </Button>
                 </Box>
-            </Box>
 
             <Card sx={{
                 borderRadius: '35px',

@@ -8,12 +8,25 @@ import store from './store';
 import { SnackbarProvider } from 'notistack';
 import { UserProvider } from './context/UserContext';
 import { replaceAlert } from './utils/sweetAlert';
+import axios from 'axios';
 
 // Custom Icons for Grand Toasts
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+
+// Intercept all Axios requests to support multi-tab auth for Admin and User
+axios.interceptors.request.use((config) => {
+    if (window.location.pathname.startsWith('/admin')) {
+        config.headers['x-role'] = 'admin';
+    } else {
+        config.headers['x-role'] = 'user';
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
 
 // Replace all alert functions with SweetAlert
 replaceAlert();

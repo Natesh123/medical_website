@@ -72,7 +72,7 @@ const OrderDetails = () => {
                                                 </div>
                                                 <div>
                                                     <h1 className="text-3xl font-semibold text-slate-800 tracking-tight">Order Details</h1>
-                                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mt-1">Order ID: <span className="text-slate-600">{params.id}</span></p>
+                                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mt-1">Order ID: <span className="text-slate-600">{params.id.slice(-5).toUpperCase()}</span></p>
                                                 </div>
                                             </div>
                                         </div>

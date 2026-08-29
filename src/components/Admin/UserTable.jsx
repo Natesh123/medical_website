@@ -23,7 +23,11 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    TextField, 
+    Select, 
+    MenuItem, 
+    FormControl
 } from '@mui/material';
 
 import { useDispatch, useSelector } from "react-redux";
@@ -40,6 +44,13 @@ const UserTable = () => {
 
     const [open, setOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+
+    // Filter States
+    const [filterRole, setFilterRole] = useState('All');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterEmail, setFilterEmail] = useState('');
+    const [filterMobile, setFilterMobile] = useState('');
+    const [filterDate, setFilterDate] = useState('');
 
     const { users, error } = useSelector((state) => state.users);
     const { loading, isDeleted, error: deleteError } = useSelector((state) => state.profile);
@@ -90,6 +101,46 @@ const UserTable = () => {
         setSelectedUser(null);
     };
 
+    const applyFilters = (data) => {
+        if (!data || data.length === 0) return [];
+        
+        let filtered = [...data];
+
+        if (filterRole !== 'All') {
+            filtered = filtered.filter(r => String(r.role).toLowerCase() === filterRole.toLowerCase());
+        }
+
+        if (searchTerm.trim() !== '') {
+            const term = searchTerm.toLowerCase().trim();
+            filtered = filtered.filter(row => {
+                return (
+                    String(row.name).toLowerCase().includes(term) ||
+                    String(row.email).toLowerCase().includes(term) ||
+                    String(row._id).toLowerCase().includes(term) ||
+                    String(row.phone || '').toLowerCase().includes(term)
+                );
+            });
+        }
+
+        if (filterEmail.trim() !== '') {
+            filtered = filtered.filter(r => String(r.email).toLowerCase().includes(filterEmail.toLowerCase()));
+        }
+        if (filterMobile.trim() !== '') {
+            filtered = filtered.filter(r => String(r.phone || '').toLowerCase().includes(filterMobile.toLowerCase()));
+        }
+        if (filterDate !== '') {
+            const targetDate = new Date(filterDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            filtered = filtered.filter(r => {
+                const rowDate = new Date(r.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                return rowDate === targetDate;
+            });
+        }
+
+        return filtered;
+    };
+    
+    const filteredUsers = applyFilters(users);
+
     return (
         <Box sx={{ minHeight: '100vh', py: 4 }}>
             <MetaData title="Personnel Management | Shree Kishan Aayushi" />
@@ -105,6 +156,77 @@ const UserTable = () => {
                     </Typography>
                 </Box>
             </Box>
+
+            <div className="flex flex-wrap gap-3 p-4 bg-white border border-slate-100 rounded-3xl mb-6 shadow-sm items-center">
+                <FormControl size="small" sx={{ flex: 1, minWidth: '130px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}>
+                    <Select
+                        value={filterRole}
+                        onChange={(e) => { setFilterRole(e.target.value); setPage(0); }}
+                        displayEmpty
+                        sx={{ color: '#475569', fontWeight: 600, fontSize: '13px' }}
+                    >
+                        <MenuItem value="All">All Roles</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
+                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="doctor">Doctor</MenuItem>
+                        <MenuItem value="dealer">Dealer</MenuItem>
+                    </Select>
+                </FormControl>
+                
+                <TextField
+                    placeholder="Search All..."
+                    variant="outlined"
+                    size="small"
+                    value={searchTerm}
+                    onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
+                    sx={{ flex: 1, minWidth: '130px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+
+                <TextField
+                    placeholder="Email"
+                    variant="outlined"
+                    size="small"
+                    value={filterEmail}
+                    onChange={(e) => { setFilterEmail(e.target.value); setPage(0); }}
+                    sx={{ flex: 1.5, minWidth: '160px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <TextField
+                    placeholder="Mobile"
+                    variant="outlined"
+                    size="small"
+                    value={filterMobile}
+                    onChange={(e) => { setFilterMobile(e.target.value); setPage(0); }}
+                    sx={{ flex: 1, minWidth: '130px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <TextField
+                    type="date"
+                    variant="outlined"
+                    size="small"
+                    value={filterDate}
+                    onChange={(e) => { setFilterDate(e.target.value); setPage(0); }}
+                    sx={{ flex: 1, minWidth: '140px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <Button 
+                    variant="contained" 
+                    color="error" 
+                    size="small"
+                    disableElevation
+                    onClick={() => {
+                        setSearchTerm('');
+                        setFilterRole('All');
+                        setFilterEmail('');
+                        setFilterMobile('');
+                        setFilterDate('');
+                        setPage(0);
+                    }}
+                    sx={{ fontWeight: 700, borderRadius: '8px', textTransform: 'none', height: '40px', px: 3 }}
+                >
+                    Clear
+                </Button>
+            </div>
 
             <Card sx={{
                 borderRadius: '35px',
@@ -122,6 +244,7 @@ const UserTable = () => {
                                         { label: 'S.No', width: '80px' },
                                         { label: 'User Details', width: 'auto' },
                                         { label: 'Email', width: 'auto' },
+                                        { label: 'Mobile', width: '130px' },
                                         { label: 'Gender', width: '120px' },
                                         { label: 'Role', width: '140px' },
                                         { label: 'Actions', width: '120px' }
@@ -150,13 +273,13 @@ const UserTable = () => {
                             <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} align="center" sx={{ py: 12 }}>
+                                        <TableCell colSpan={7} align="center" sx={{ py: 12 }}>
                                             <CircularProgress size={24} sx={{ color: '#16a34a' }} />
                                             <Typography sx={{ mt: 2, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '10px', color: 'rgba(2, 6, 23, 0.3)' }}>Loading...</Typography>
                                         </TableCell>
                                     </TableRow>
-                                ) : users?.length > 0 ? (
-                                    users
+                                ) : filteredUsers?.length > 0 ? (
+                                    filteredUsers
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((user, index) => (
                                             <TableRow
@@ -182,6 +305,11 @@ const UserTable = () => {
                                                 <TableCell align="left">
                                                     <Typography sx={{ fontSize: '11px', color: 'rgba(2, 6, 23, 0.4)', fontWeight: 700 }}>
                                                         {user.email}
+                                                    </Typography>
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <Typography sx={{ fontSize: '11px', color: '#020617', fontWeight: 800 }}>
+                                                        {user.phone || 'N/A'}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align="center">
@@ -240,7 +368,7 @@ const UserTable = () => {
                                         ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={6} align="center" sx={{ py: 12 }}>
+                                        <TableCell colSpan={7} align="center" sx={{ py: 12 }}>
                                             <Typography sx={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '11px', opacity: 0.2 }}>No Users Found</Typography>
                                         </TableCell>
                                     </TableRow>
@@ -251,7 +379,7 @@ const UserTable = () => {
 
                     <TablePagination
                         component="div"
-                        count={users?.length || 0}
+                        count={filteredUsers?.length || 0}
                         page={page}
                         onPageChange={(e, newPage) => setPage(newPage)}
                         rowsPerPage={rowsPerPage}

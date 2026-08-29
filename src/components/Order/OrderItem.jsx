@@ -33,10 +33,9 @@ const OrderItem = (props) => {
                     <img draggable="false" className="h-full w-full object-contain mix-blend-multiply" src={getImageUrl()} alt={name} />
                 </div>
                 
-                {/* Main Details */}
                 <div className="flex flex-col flex-1 min-w-0 py-0.5">
                     <p className="text-sm font-semibold text-gray-900 uppercase tracking-wide truncate">{name}</p>
-                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">ID: {orderId.substring(0, 10)}</p>
+                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">ID: {orderId.slice(-5).toUpperCase()}</p>
                     
                     <div className="flex justify-between items-end mt-auto">
                         <div className="flex flex-col">

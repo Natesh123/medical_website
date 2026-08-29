@@ -91,12 +91,7 @@ const PrimaryDropDownMenu = ({ setTogglePrimaryDropDown, user }) => {
             </div>
 
             <div className="flex flex-col gap-1">
-                {(user.permissions && user.permissions.length > 0) &&
-                    <Link className="px-5 py-3.5 flex gap-4 items-center hover:bg-blue-600 hover:text-white rounded-[1.5rem] transition-all duration-300 group" to="/admin/dashboard" onClick={() => setTogglePrimaryDropDown(false)}>
-                        <DashboardIcon sx={{ fontSize: "18px" }} className="text-blue-600 group-hover:text-white" />
-                        <span className="text-[10px] font-semibold uppercase tracking-widest">Administrator</span>
-                    </Link>
-                }
+                {/* Administrator link removed */}
 
                 <Link className="px-5 py-3.5 flex gap-4 items-center hover:bg-blue-600 hover:text-white rounded-[1.5rem] transition-all duration-300 group" to="/account" onClick={() => setTogglePrimaryDropDown(false)}>
                     <AccountCircleIcon sx={{ fontSize: "18px" }} className="text-blue-600 group-hover:text-white" />

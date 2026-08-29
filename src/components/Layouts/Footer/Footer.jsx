@@ -57,7 +57,7 @@ const Footer = () => {
           <div className="container mx-auto px-6 relative z-10">
             
             {/* Top Section - Trust Badges */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/10 rounded-3xl p-8 mb-16 backdrop-blur-sm border border-white/20">
+            <div data-aos="fade-up" className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/10 rounded-3xl p-8 mb-16 backdrop-blur-sm border border-white/20">
               <div className="flex flex-col items-center text-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-primary-orange/20 flex items-center justify-center text-primary-orange">
                   <StarsIcon sx={{ fontSize: 28 }} />
@@ -102,7 +102,7 @@ const Footer = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
               
               {/* Brand Profile - Column 1 */}
-              <div className="lg:col-span-4 space-y-6">
+              <div data-aos="fade-up" data-aos-delay="100" className="lg:col-span-4 space-y-6">
                 <div>
                   <h2 className="text-3xl font-semibold tracking-tight mb-1">
                     SHREE KISHAN <span className="text-primary-orange">AAYUSHI</span>
@@ -124,7 +124,7 @@ const Footer = () => {
               </div>
 
               {/* Quick Navigation - Columns 2, 3, 4 */}
-              <div className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div data-aos="fade-up" data-aos-delay="200" className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-8">
                 {footerLinks.map((section, index) => (
                   <div key={index}>
                     <h3 className="text-base font-semibold uppercase tracking-wider text-green-200 mb-6">{section.title}</h3>
@@ -142,7 +142,7 @@ const Footer = () => {
               </div>
 
               {/* Operations Center - Column 5 */}
-              <div className="lg:col-span-3 space-y-6">
+              <div data-aos="fade-up" data-aos-delay="300" className="lg:col-span-3 space-y-6">
                 <h3 className="text-base font-semibold uppercase tracking-wider text-green-200 mb-6">Contact Us</h3>
                 
                 <div className="flex items-start gap-4">

@@ -8,6 +8,8 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import aayushiLogo from '../../assets/images/logo1.jpg';
+import ayurvedaSiddhaImg from '../../assets/images/Home/ayurveda_siddha.jpg';
+import ayurvedaBannerImg from '../../assets/images/Home/ayurveda_banner.jpg';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -123,7 +125,7 @@ const LandingPage = () => {
         <div className="w-full flex flex-col lg:flex-row items-center justify-between relative z-20 pt-20 lg:pt-0">
           
           {/* Left Text Content (Pushed to the left edge with padding) */}
-          <div className="w-full lg:w-[45%] flex flex-col items-start text-left gap-8 px-6 lg:pl-16 xl:pl-32 pb-16 lg:pb-0 z-10">
+          <div className="w-full lg:w-[45%] flex flex-col items-start text-left gap-8 px-6 lg:pl-16 xl:pl-32 pb-16 lg:pb-0 z-10" data-aos="fade-right">
             <div className="animate-fade-in-up mb-4">
               <img src={aayushiLogo} alt="Shree Kishan Aayushi Logo" className="h-16 sm:h-20 lg:h-24 w-auto drop-shadow-md rounded-2xl" />
             </div>
@@ -172,7 +174,7 @@ const LandingPage = () => {
           </div>
 
           {/* Right Image Composition (Premium Collage) */}
-          <div className="w-full lg:w-[55%] relative h-[60vh] lg:h-screen hidden lg:flex items-center justify-center p-8 lg:p-16">
+          <div className="w-full lg:w-[55%] relative h-[60vh] lg:h-screen hidden lg:flex items-center justify-center p-8 lg:p-16" data-aos="fade-left">
              
              {/* Abstract Background Curve */}
              <div className="absolute right-0 top-0 w-[80%] h-full bg-gradient-to-bl from-green-100/50 via-green-50/20 to-transparent rounded-l-[8rem]"></div>
@@ -183,12 +185,12 @@ const LandingPage = () => {
                 {/* Main Large Image - Modern Medical Lab/Tech */}
                 <div className="absolute top-0 right-0 w-[75%] h-[75%] rounded-[3rem] overflow-hidden shadow-[0_30px_60px_rgba(5,46,22,0.15)] border-[8px] border-white z-10 animate-fade-in-up transform transition-transform hover:scale-105 duration-700">
                    <div className="absolute inset-0 bg-green-900/10 z-10 mix-blend-overlay"></div>
-                   <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1200&auto=format&fit=crop" alt="Advanced Clinical Research" className="w-full h-full object-cover" />
+                   <img src={ayurvedaSiddhaImg} alt="Ayurveda and Siddha Medicine" className="w-full h-full object-cover" />
                 </div>
                 
                 {/* Secondary Image Overlapping - Professional Doctors */}
                 <div className="absolute bottom-10 left-0 w-[60%] h-[60%] rounded-[2.5rem] overflow-hidden shadow-[0_20px_40px_rgba(5,46,22,0.2)] border-[6px] border-white z-20 animate-fade-in-up transform hover:-translate-y-2 hover:rotate-1 transition-all duration-500" style={{ animationDelay: '0.3s' }}>
-                   <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop" alt="Clinical Precision" className="w-full h-full object-cover" />
+                   <img src={ayurvedaBannerImg} alt="Ayurvedic Wellness" className="w-full h-full object-cover" />
                 </div>
 
                 {/* Floating Glassmorphism Badge 1 - ISO Certified */}
@@ -229,7 +231,7 @@ const LandingPage = () => {
       {/* 2. Custom Feature Grid (Immersive 3D Cards) */}
       <section id="explore" className="w-full py-32 bg-[#052e16] relative z-10">
         <div className="container-responsive px-4">
-          <div className="text-center mb-20">
+          <div className="text-center mb-20" data-aos="fade-up">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold uppercase tracking-tighter mb-6">
               Why Choose <span className="text-yellow-500">Us?</span>
             </h2>
@@ -242,7 +244,7 @@ const LandingPage = () => {
               { title: "Secure Logistics", icon: <LocalShippingIcon sx={{ fontSize: 40 }} />, desc: "AES-256 encrypted tracking ensures your vital supplies are monitored from our hub to your facility." },
               { title: "24/7 Support", icon: <SupportAgentIcon sx={{ fontSize: 40 }} />, desc: "Our nodal network agents are available around the clock to assist with critical procurement." }
             ].map((feature, i) => (
-              <div key={i} className="group relative p-[1.5px] rounded-3xl bg-gradient-to-b from-white/10 via-white/5 to-transparent hover:from-yellow-500 hover:via-green-500/50 hover:to-transparent transition-all duration-700 transform hover:-translate-y-2">
+              <div key={i} data-aos="fade-up" data-aos-delay={`${i * 150}`} className="group relative p-[1.5px] rounded-3xl bg-gradient-to-b from-white/10 via-white/5 to-transparent hover:from-yellow-500 hover:via-green-500/50 hover:to-transparent transition-all duration-700 transform hover:-translate-y-2">
                 <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/20 to-transparent rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="relative h-full bg-[#031d0e] rounded-[1.4rem] p-10 flex flex-col items-center text-center gap-6 border border-white/5 overflow-hidden">
                   <div className="absolute -top-20 -right-20 w-40 h-40 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-all duration-700"></div>
@@ -266,7 +268,7 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none mix-blend-multiply"></div>
         
         <div className="container-responsive px-4 mb-8 flex flex-col md:flex-row items-end justify-between gap-4 relative z-10">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4" data-aos="fade-right">
              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-100 border border-yellow-200 shadow-sm w-fit">
                 <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-yellow-700">Verified Catalog</span>
@@ -283,8 +285,7 @@ const LandingPage = () => {
           </button>
         </div>
 
-        {/* Horizontal Scroll Container */}
-        <div ref={scrollRef} className="w-full flex overflow-x-auto pb-8 px-4 lg:px-16 gap-6 relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div ref={scrollRef} className="w-full flex overflow-x-auto pb-8 px-4 lg:px-16 gap-6 relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} data-aos="fade-up">
           {products && [...products, ...products, ...products, ...products].map((product, index) => (
             <div 
               key={`${product._id}-${index}`} 
@@ -349,7 +350,7 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none mix-blend-overlay"></div>
         
         <div className="container-responsive relative z-10 px-4 mb-12">
-          <div className="flex flex-col gap-4 max-w-7xl mx-auto">
+          <div className="flex flex-col gap-4 max-w-7xl mx-auto" data-aos="fade-up">
               
               <div className="flex items-center gap-4 mb-2">
                  <span className="w-12 h-1 bg-yellow-500 rounded-full"></span>
@@ -369,7 +370,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div ref={videoScrollRef} className="w-full flex overflow-x-auto pb-16 px-4 lg:px-16 gap-8 relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div ref={videoScrollRef} className="w-full flex overflow-x-auto pb-16 px-4 lg:px-16 gap-8 relative z-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} data-aos="fade-up">
            {/* Only duplicate for infinite scroll if there are more than 2 videos */}
            {featuredVideos && featuredVideos.length > 0 ? (
              (featuredVideos.length > 2 ? [...featuredVideos, ...featuredVideos] : featuredVideos).map((vid, idx) => (
@@ -473,7 +474,7 @@ const LandingPage = () => {
 
         <div className="max-w-[1400px] mx-auto relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
             
-            <div className="flex flex-col gap-3 w-full lg:w-2/3">
+            <div className="flex flex-col gap-3 w-full lg:w-2/3" data-aos="fade-right">
                 <div className="flex items-center gap-3 mb-1">
                    <span className="w-8 h-1 bg-yellow-500 rounded-full"></span>
                    <p className="text-[10px] font-semibold text-yellow-500 uppercase tracking-[0.3em]">Secure Medical Portal</p>

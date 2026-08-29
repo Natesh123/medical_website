@@ -1,8 +1,11 @@
 import WebFont from 'webfontloader';
 import Footer from './components/Layouts/Footer/Footer';
 import Header from './components/Layouts/Header/Header';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import Login from './components/User/Login';
 import Register from './components/User/Register';
+import AdminLogin from './components/Admin/AdminLogin';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { loadUser } from './actions/userAction';
 import { useEffect, useMemo } from 'react';
@@ -34,6 +37,8 @@ import OrderTable from './components/Admin/OrderTable';
 import ProductTable from './components/Admin/ProductTable';
 import UserTable from './components/Admin/UserTable';
 import UpdateUser from './components/Admin/UpdateUser';
+import Reports from './components/Admin/Reports';
+import UpdateOrder from './components/Admin/UpdateOrder';
 import AddUser from './components/Admin/AddUser';
 import ReviewsTable from './components/Admin/ReviewsTable';
 import Wishlist from './components/Wishlist/Wishlist';
@@ -61,6 +66,11 @@ function App() {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: false, // whether animation should happen only once - while scrolling down
+      offset: 50,
+    });
     WebFont.load({
       google: {
         families: ["Outfit:300,400,500,600,700,800,900", "Plus Jakarta Sans:300,400,500,600,700,800"]
@@ -209,6 +219,8 @@ function App() {
         } ></Route>
 
         {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
         <Route path="/admin/dashboard" element={
           <ProtectedRoute isAdmin={true}>
             <Dashboard activeTab={0}>
@@ -264,6 +276,14 @@ function App() {
           <ProtectedRoute isAdmin={true}>
             <Dashboard activeTab={5}>
               <UserTable />
+            </Dashboard>
+          </ProtectedRoute>
+        } ></Route>
+
+        <Route path="/admin/reports" element={
+          <ProtectedRoute isAdmin={true}>
+            <Dashboard activeTab={15}>
+              <Reports />
             </Dashboard>
           </ProtectedRoute>
         } ></Route>

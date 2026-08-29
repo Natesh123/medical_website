@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearErrors, loginUser } from '../../actions/userAction';
+import { clearErrors, loginUser, logoutUser } from '../../actions/userAction';
 import { useSnackbar } from 'notistack';
 import BackdropLoader from '../Layouts/BackdropLoader';
 import MetaData from '../Layouts/MetaData';
@@ -16,7 +16,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import aayushiLogo from '../../assets/images/logo1.jpg';
 
-const Login = () => {
+const AdminLogin = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -29,10 +29,10 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
+    const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);
     const handleMouseDownPassword = (event) => event.preventDefault();
-    const [hasLoggedIn, setHasLoggedIn] = useState(false);
 
     const validate = (field, value) => {
         const newErrors = { ...errors };
@@ -103,14 +103,21 @@ const Login = () => {
             if (user?.role === "admin") {
                 navigate("/admin/dashboard");
             } else {
-                navigate("/home");
+                dispatch(logoutUser());
+                Swal.fire({
+                    title: "Access Denied!",
+                    text: "You are not authorized as an administrator.",
+                    icon: "error",
+                    confirmButtonColor: "#d33",
+                });
+                navigate("/login");
             }
         }
     }, [dispatch, error, isAuthenticated, navigate, user, hasLoggedIn]);
 
     return (
         <>
-            <MetaData title="Login | Shree Kishan Aayushi" />
+            <MetaData title="Admin Portal | Shree Kishan Aayushi" />
             {loading && <BackdropLoader />}
 
             <div className="min-h-screen bg-gradient-to-br from-[#eef2f6] to-[#d5e0e9] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -137,27 +144,21 @@ const Login = () => {
                                     </div>
                                 </Link>
                                 
-                                <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-6">Welcome Back.</h2>
+                                <h2 className="text-4xl md:text-5xl font-semibold leading-tight mb-6">Admin Portal.</h2>
                                 <p className="text-green-100/80 text-lg mb-10 leading-relaxed font-light">
-                                    Please log in to manage your orders, track your medical supplies, and securely access your account.
+                                    Authorized personnel only. Please securely authenticate to access the administration dashboard and manage the platform.
                                 </p>
                             </div>
 
-                            <div className="mt-auto bg-black/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-                                <p className="text-sm text-green-50 font-medium mb-3">New to Shree Kishan Aayushi?</p>
-                                <Link to="/register" className="group flex items-center justify-between bg-white text-[#064e3b] px-6 py-3 rounded-xl font-semibold shadow-lg hover:bg-gray-50 transition-all duration-300 w-full hover:-translate-y-1">
-                                    <span>Create New Account</span>
-                                    <HealthAndSafetyIcon className="text-primary-orange group-hover:scale-110 transition-transform" />
-                                </Link>
-                            </div>
+
                         </div>
                     </div>
 
                     {/* Main Form Area */}
                     <div className="md:w-[55%] p-10 md:p-16 flex flex-col justify-center bg-white">
                         <div className="mb-12">
-                            <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Secure Login</h1>
-                            <p className="text-gray-500 mt-2 font-medium">Please enter your credentials to proceed</p>
+                            <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">Administrator Login</h1>
+                            <p className="text-gray-500 mt-2 font-medium">Please enter your admin credentials to proceed</p>
                         </div>
 
                         <form onSubmit={handleLogin} className="space-y-6">
@@ -269,4 +270,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default AdminLogin;

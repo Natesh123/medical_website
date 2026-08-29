@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Categories from '../Layouts/Categories';
 import Banner from './Banner/Banner';
 import DealSlider from './DealSlider/DealSlider';
-import ProductSlider from './ProductSlider/ProductSlider';
+import Product from '../Products/Product';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearErrors, getSliderProducts } from '../../actions/productAction';
+import { clearErrors, getProducts } from '../../actions/productAction';
 import { useSnackbar } from 'notistack';
 import MetaData from '../Layouts/MetaData';
 import HomeHealthArticles from './HomeHealthArticles';
@@ -18,13 +19,14 @@ import tipsImg from '../../assets/images/Home/health_tips.svg';
 import HomeHighlights from './HomeHighlights';
 import AboutSite from './AboutSite';
 import ayurvedaImg from '../../assets/images/Home/ayurveda.png';
+import ayurvedaSiddhaImg from '../../assets/images/Home/ayurveda_siddha.jpg';
 
 const Home = () => {
 
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { error, loading } = useSelector((state) => state.products);
+  const { error, loading, products } = useSelector((state) => state.products);
 
   useEffect(() => {
     if (error) {
@@ -33,7 +35,7 @@ const Home = () => {
       }
       dispatch(clearErrors());
     }
-    dispatch(getSliderProducts());
+    dispatch(getProducts());
   }, [dispatch, error, enqueueSnackbar]);
 
   return (
@@ -43,7 +45,7 @@ const Home = () => {
       <main className="w-full min-h-screen bg-slate-50 relative overflow-hidden flex flex-col">
 
         {/* Banner Section - Now Full Width Edge-to-Edge */}
-        <section className="w-full relative z-10 pt-20">
+          <section className="w-full relative z-10 pt-20">
           <Banner />
         </section>
 
@@ -53,26 +55,58 @@ const Home = () => {
           <div className="absolute bottom-0 right-[-10%] w-[60%] h-[60%] bg-primary-orange/10 blur-[150px] rounded-full animate-float-2"></div>
         </div>
 
-        <div className="container mx-auto px-4 sm:px-8 relative z-20 flex flex-col gap-24 py-20">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-20 flex flex-col gap-20 py-16">
 
-          {/* Why Choose Us - Premium Clinical Block */}
-          <section className="animate-fade-in-up">
+
+
+          {/* Overall Dynamic Products Grid */}
+          <section data-aos="fade-up" className="w-full flex flex-col gap-8 bg-white/40 p-4 sm:p-6 lg:p-8 rounded-[3rem] border border-blue-100/50 shadow-xl shadow-slate-200/40">
+              <div className="flex flex-row justify-between items-end border-b-2 border-slate-100 pb-4 mb-4">
+                  <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-3">
+                          <span className="w-8 h-1 bg-[#16a34a] rounded-full"></span>
+                          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight uppercase">Trending Supplies</h2>
+                      </div>
+                      <p className="text-[11px] font-bold text-slate-400 tracking-[0.2em] uppercase ml-11">Explore our complete premium catalog</p>
+                  </div>
+                  <Link to="/products" className="mb-1 text-[11px] font-bold text-[#d97706] hover:text-white border border-[#d97706] hover:bg-[#d97706] px-5 py-2 rounded-full uppercase tracking-widest transition-all duration-300">
+                      View All
+                  </Link>
+              </div>
+              
+              {loading ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {[1, 2, 3, 4, 5, 6].map(i => (
+                          <div key={i} className="bg-white/50 h-32 rounded-2xl animate-pulse border border-slate-100 shadow-sm"></div>
+                      ))}
+                  </div>
+              ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {products?.slice(0, 12).map((product) => (
+                          <Product key={product._id} {...product} />
+                      ))}
+                  </div>
+              )}
+          </section>
+
+
+
+          {/* Why Choose Us - Dark Block */}
+          <section data-aos="fade-right">
               <AboutSite
                 variant="dark"
-                image="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&h=800&fit=crop"
-                title="State-of-the-Art Clinical Care"
-                description="We leverage advanced logistics and professional expertise to deliver a premium healthcare experience right to your fingertips."
+                image={ayurvedaSiddhaImg}
+                title="Traditional Siddha & Ayurvedic Care"
+                description="Experience the healing power of ancient wisdom with our authentic Siddha and Ayurveda medical supplies, bringing wellness to your doorstep."
                 bullets={["100% SECURE PROTOCOL", "LIVE SPECIALIST SYNC", "EXPRESS CLINICAL DELIVERY"]}
                 reverse={false}
               />
           </section>
 
-          {/* Delivery & Support */}
-          <section className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <HomeDelivery />
-          </section>
 
-          <section className="animate-fade-in-up mb-16" style={{ animationDelay: '0.4s' }}>
+
+          {/* Why Choose Us - Emerald Block */}
+          <section data-aos="fade-left">
               <AboutSite
                 variant="emerald"
                 image={ayurvedaImg}
@@ -81,6 +115,13 @@ const Home = () => {
                 bullets={["REAL-TIME ASSET TRACKING", "BIO-SECURE PACKAGING", "AUTOMATED RETURN PROTOCOLS"]}
                 reverse={true}
               />
+          </section>
+
+
+
+          {/* Delivery & Support */}
+          <section data-aos="fade-up" className="mb-10">
+            <HomeDelivery />
           </section>
 
         </div>

@@ -57,6 +57,12 @@ const ProductTable = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
+    // Filter States
+    const [filterStatus, setFilterStatus] = useState('All');
+    const [filterStock, setFilterStock] = useState('All');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterCategory, setFilterCategory] = useState('');
+
     // Modal states
     // Modal states
     const [openAddModal, setOpenAddModal] = useState(false);
@@ -286,6 +292,41 @@ const ProductTable = () => {
         );
     }
 
+    const applyFilters = (data) => {
+        if (!data || data.length === 0) return [];
+        let filtered = [...data];
+
+        if (filterStatus !== 'All') {
+            filtered = filtered.filter(p => (p.status || 'Active') === filterStatus);
+        }
+
+        if (filterStock !== 'All') {
+            if (filterStock === 'InStock') filtered = filtered.filter(p => p.stock > 0);
+            if (filterStock === 'OutOfStock') filtered = filtered.filter(p => p.stock <= 0);
+        }
+
+        if (searchTerm.trim() !== '') {
+            const term = searchTerm.toLowerCase().trim();
+            filtered = filtered.filter(p => 
+                String(p.name).toLowerCase().includes(term) ||
+                String(p.description).toLowerCase().includes(term) ||
+                String(p._id).toLowerCase().includes(term)
+            );
+        }
+
+        if (filterCategory.trim() !== '') {
+            const cat = filterCategory.toLowerCase().trim();
+            filtered = filtered.filter(p => {
+                const categoryName = p.category?.name || p.category || '';
+                return String(categoryName).toLowerCase().includes(cat);
+            });
+        }
+
+        return filtered;
+    };
+    
+    const filteredProducts = applyFilters(products);
+
     return (
         <Box sx={{ minHeight: '100vh', py: 4 }}>
             <MetaData title="Inventory | Shree Kishan Aayushi" />
@@ -325,6 +366,69 @@ const ProductTable = () => {
                     Add Product
                 </Button>
             </Box>
+
+            <div className="flex flex-wrap gap-3 p-4 bg-white border border-slate-100 rounded-3xl mb-6 shadow-sm items-center">
+                <FormControl size="small" sx={{ flex: 1, minWidth: '130px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}>
+                    <Select
+                        value={filterStatus}
+                        onChange={(e) => { setFilterStatus(e.target.value); setPage(0); }}
+                        displayEmpty
+                        sx={{ color: '#475569', fontWeight: 600, fontSize: '13px' }}
+                    >
+                        <MenuItem value="All">All Status</MenuItem>
+                        <MenuItem value="Active">Active</MenuItem>
+                        <MenuItem value="Inactive">Inactive</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl size="small" sx={{ flex: 1, minWidth: '130px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}>
+                    <Select
+                        value={filterStock}
+                        onChange={(e) => { setFilterStock(e.target.value); setPage(0); }}
+                        displayEmpty
+                        sx={{ color: '#475569', fontWeight: 600, fontSize: '13px' }}
+                    >
+                        <MenuItem value="All">All Stock</MenuItem>
+                        <MenuItem value="InStock">In Stock</MenuItem>
+                        <MenuItem value="OutOfStock">Out of Stock</MenuItem>
+                    </Select>
+                </FormControl>
+                
+                <TextField
+                    placeholder="Search All..."
+                    variant="outlined"
+                    size="small"
+                    value={searchTerm}
+                    onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
+                    sx={{ flex: 1.5, minWidth: '160px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+
+                <TextField
+                    placeholder="Category Filter"
+                    variant="outlined"
+                    size="small"
+                    value={filterCategory}
+                    onChange={(e) => { setFilterCategory(e.target.value); setPage(0); }}
+                    sx={{ flex: 1, minWidth: '140px', bgcolor: 'white', '& fieldset': { borderRadius: '8px' } }}
+                />
+                
+                <Button 
+                    variant="contained" 
+                    color="error" 
+                    size="small"
+                    disableElevation
+                    onClick={() => {
+                        setSearchTerm('');
+                        setFilterStatus('All');
+                        setFilterStock('All');
+                        setFilterCategory('');
+                        setPage(0);
+                    }}
+                    sx={{ fontWeight: 700, borderRadius: '8px', textTransform: 'none', height: '40px', px: 3, ml: 'auto' }}
+                >
+                    Clear
+                </Button>
+            </div>
 
             <Card sx={{
                 borderRadius: '35px',
@@ -369,8 +473,8 @@ const ProductTable = () => {
                             </TableHead>
 
                             <TableBody>
-                                {products?.length ? (
-                                    products
+                                {filteredProducts?.length ? (
+                                    filteredProducts
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((product, index) => (
                                             <TableRow
@@ -423,7 +527,7 @@ const ProductTable = () => {
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <Typography sx={{ fontSize: '13px', color: '#020617', fontWeight: 900, letterSpacing: '-0.02em' }}>
-                                                        ₹{(product.price || 0).toLocaleString()}
+                                                        ₹{((product.price || 0) + ((product.price || 0) * (product.gst || 0) / 100)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align="center">
@@ -505,7 +609,7 @@ const ProductTable = () => {
 
                     <TablePagination
                         component="div"
-                        count={products?.length || 0}
+                        count={filteredProducts?.length || 0}
                         page={page}
                         onPageChange={(e, newPage) => setPage(newPage)}
                         rowsPerPage={rowsPerPage}
@@ -646,6 +750,26 @@ const ProductTable = () => {
                                         </Select>
                                     </div>
                                 </div>
+                                
+                                {/* Dynamic GST Calculation Display */}
+                                {productForm.price && (
+                                    <div className="bg-green-50/50 p-4 rounded-[15px] border border-green-100 flex justify-between items-center">
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] font-bold text-green-600 uppercase tracking-widest">Base Price</span>
+                                            <span className="text-sm font-semibold text-slate-700">₹{parseFloat(productForm.price || 0).toFixed(2)}</span>
+                                        </div>
+                                        <div className="text-lg font-light text-green-300">+</div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] font-bold text-green-600 uppercase tracking-widest">GST Amount ({productForm.gst || 0}%)</span>
+                                            <span className="text-sm font-semibold text-slate-700">₹{((parseFloat(productForm.price || 0) * parseFloat(productForm.gst || 0)) / 100).toFixed(2)}</span>
+                                        </div>
+                                        <div className="text-lg font-light text-green-300">=</div>
+                                        <div className="flex flex-col text-right">
+                                            <span className="text-[9px] font-bold text-green-600 uppercase tracking-widest">Total Price</span>
+                                            <span className="text-base font-bold text-green-700">₹{(parseFloat(productForm.price || 0) + ((parseFloat(productForm.price || 0) * parseFloat(productForm.gst || 0)) / 100)).toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-semibold text-green-900/30 uppercase tracking-widest ml-1">Description</label>
                                     <TextField
