@@ -35,6 +35,12 @@ import {
     ALL_USERS_FAIL,
     ALL_USERS_SUCCESS,
     ALL_USERS_REQUEST,
+    ADD_ADDRESS_REQUEST,
+    ADD_ADDRESS_SUCCESS,
+    ADD_ADDRESS_FAIL,
+    DELETE_ADDRESS_REQUEST,
+    DELETE_ADDRESS_SUCCESS,
+    DELETE_ADDRESS_FAIL,
 } from '../constants/userConstants';
 import axios from 'axios';
 
@@ -348,5 +354,63 @@ export const deleteUser = (id) => async (dispatch) => {
 
 // Clear All Errors
 export const clearErrors = () => async (dispatch) => {
-    dispatch({ type: CLEAR_ERRORS });
+    dispatch({
+        type: CLEAR_ERRORS,
+    });
+};
+
+// Add Address
+export const addAddress = (addressData) => async (dispatch) => {
+    try {
+        dispatch({ type: ADD_ADDRESS_REQUEST });
+
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+
+        const { data } = await axios.post(
+            '/api/v1/addresses',
+            addressData,
+            config
+        );
+
+        dispatch({
+            type: ADD_ADDRESS_SUCCESS,
+            payload: data,
+        });
+
+        // Refresh user details to get updated addresses
+        dispatch(loadUser());
+
+    } catch (error) {
+        dispatch({
+            type: ADD_ADDRESS_FAIL,
+            payload: error.response?.data?.message || "Failed to add address",
+        });
+    }
+};
+
+// Delete Address
+export const deleteAddress = (id) => async (dispatch) => {
+    try {
+        dispatch({ type: DELETE_ADDRESS_REQUEST });
+
+        const { data } = await axios.delete(`/api/v1/addresses/${id}`);
+
+        dispatch({
+            type: DELETE_ADDRESS_SUCCESS,
+            payload: data,
+        });
+
+        // Refresh user details to get updated addresses
+        dispatch(loadUser());
+
+    } catch (error) {
+        dispatch({
+            type: DELETE_ADDRESS_FAIL,
+            payload: error.response?.data?.message || "Failed to delete address",
+        });
+    }
 };

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Slider from 'react-slick';
 import { clearErrors, getProductDetails, getSimilarProducts } from '../../actions/productAction';
 import { NextBtn, PreviousBtn } from '../Home/Banner/Banner';
-import ProductSlider from '../Home/ProductSlider/ProductSlider';
+import Product from '../Products/Product';
 import Loader from '../Layouts/Loader';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -29,6 +29,7 @@ const ProductDetails = () => {
     const { wishlistItems } = useSelector((state) => state.wishlist);
     const { success, error: reviewError } = useSelector((state) => state.newReview);
     const { isAuthenticated } = useSelector((state) => state.user);
+    const { products } = useSelector((state) => state.products);
 
     const [open, setOpen] = useState(false);
     const [rating, setRating] = useState(0);
@@ -174,15 +175,15 @@ const ProductDetails = () => {
     }, [dispatch, product]);
 
     return (
-        <main className="min-h-screen pt-36 pb-32 bg-[#f4f6f8] relative">
+        <main className="min-h-screen pt-36 pb-16 bg-[#f4f6f8] relative">
             <MetaData title={`${product.name} | Shree Kishan Aayushi`} />
 
             {loading ? <Loader /> : (
-                <section className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
+                <section className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
                     
                     {/* Breadcrumb Removed */}
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
 
                         {/* LEFT: Product Image & Overview */}
                         <div className="lg:col-span-5 w-full flex flex-col gap-6">
@@ -317,19 +318,7 @@ const ProductDetails = () => {
 
                             {/* Description Card moved to Left Column */}
                             
-                            {/* Reviews Action Card */}
-                            <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
-                                <div>
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-1">Customer Reviews</h3>
-                                    <p className="text-sm text-slate-500">Share your experience and help others.</p>
-                                </div>
-                                <button
-                                    onClick={() => setOpen(true)}
-                                    className="px-6 py-2.5 bg-white border border-slate-300 text-slate-700 rounded-lg font-semibold text-sm shadow-sm hover:bg-slate-50 transition-colors whitespace-nowrap"
-                                >
-                                    Write a Review
-                                </button>
-                            </div>
+
 
                         </div>
                     </div>
@@ -384,10 +373,27 @@ const ProductDetails = () => {
                         </DialogActions>
                     </Dialog>
 
-                    {/* Similar Products */}
-                    <div className="mt-16 border-t border-slate-200 pt-12">
-                        <h2 className="text-2xl font-semibold text-slate-900 mb-8">Similar Products</h2>
-                        <ProductSlider title="" tagline="" productId={product._id} />
+                    {/* Similar Products Grid */}
+                    <div className="mt-16 border-t-2 border-slate-100 pt-12">
+                        <div className="flex flex-row justify-between items-end border-b-2 border-slate-100 pb-4 mb-8">
+                            <div className="flex items-center gap-3">
+                                <span className="w-8 h-1 bg-[#16a34a] rounded-full"></span>
+                                <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight uppercase">Similar Products</h2>
+                            </div>
+                        </div>
+
+                        {products && products.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {products.filter(p => p._id !== product._id).slice(0, 8).map((p) => (
+                                    <Product key={p._id} {...p} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                                <ShoppingBagIcon sx={{ fontSize: 48, mb: 2, opacity: 0.5 }} />
+                                <p className="text-sm font-semibold uppercase tracking-widest">No Similar Products Available</p>
+                            </div>
+                        )}
                     </div>
                 </section>
             )}

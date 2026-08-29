@@ -22,6 +22,7 @@ const Login = () => {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     const location = useLocation();
+    const redirect = new URLSearchParams(location.search).get("redirect");
 
     const { loading, isAuthenticated, error, user } = useSelector((state) => state.user);
 
@@ -101,12 +102,12 @@ const Login = () => {
             }
 
             if (user?.role === "admin") {
-                navigate("/admin/dashboard");
+                navigate(redirect || "/admin/dashboard");
             } else {
-                navigate("/home");
+                navigate(redirect || "/home");
             }
         }
-    }, [dispatch, error, isAuthenticated, navigate, user, hasLoggedIn]);
+    }, [dispatch, error, isAuthenticated, navigate, user, hasLoggedIn, redirect]);
 
     return (
         <>

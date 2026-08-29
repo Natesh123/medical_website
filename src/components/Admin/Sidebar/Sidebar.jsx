@@ -121,13 +121,7 @@ const sections = [
                 activeTab: 6,
                 permission: "roles_manage"
             },
-            {
-                icon: <ReviewsIcon />,
-                label: "Reviews",
-                ref: "/admin/reviews",
-                activeTab: 7,
-                permission: "reviews_manage"
-            },
+
             {
                 icon: <ReviewsIcon />,
                 label: "Contacts",

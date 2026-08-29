@@ -40,6 +40,14 @@ import {
     DELETE_USER_RESET,
     DELETE_USER_FAIL,
     REMOVE_USER_DETAILS,
+    ADD_ADDRESS_REQUEST,
+    ADD_ADDRESS_SUCCESS,
+    ADD_ADDRESS_FAIL,
+    ADD_ADDRESS_RESET,
+    DELETE_ADDRESS_REQUEST,
+    DELETE_ADDRESS_SUCCESS,
+    DELETE_ADDRESS_FAIL,
+    DELETE_ADDRESS_RESET,
 } from '../constants/userConstants';
 
 export const userReducer = (state = { user: {} }, { type, payload }) => {
@@ -104,6 +112,8 @@ export const profileReducer = (state = {}, { type, payload }) => {
         case UPDATE_PASSWORD_REQUEST:
         case UPDATE_USER_REQUEST:
         case DELETE_USER_REQUEST:
+        case ADD_ADDRESS_REQUEST:
+        case DELETE_ADDRESS_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -111,12 +121,14 @@ export const profileReducer = (state = {}, { type, payload }) => {
         case UPDATE_PROFILE_SUCCESS:
         case UPDATE_PASSWORD_SUCCESS:
         case UPDATE_USER_SUCCESS:
+        case ADD_ADDRESS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 isUpdated: payload,
             };
         case DELETE_USER_SUCCESS:
+        case DELETE_ADDRESS_SUCCESS:
             return {
                 ...state,
                 loading: false,
@@ -126,6 +138,8 @@ export const profileReducer = (state = {}, { type, payload }) => {
         case UPDATE_PASSWORD_FAIL:
         case UPDATE_USER_FAIL:
         case DELETE_USER_FAIL:
+        case ADD_ADDRESS_FAIL:
+        case DELETE_ADDRESS_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -134,11 +148,13 @@ export const profileReducer = (state = {}, { type, payload }) => {
         case UPDATE_PROFILE_RESET:
         case UPDATE_PASSWORD_RESET:
         case UPDATE_USER_RESET:
+        case ADD_ADDRESS_RESET:
             return {
                 ...state,
                 isUpdated: false,
             }
         case DELETE_USER_RESET:
+        case DELETE_ADDRESS_RESET:
             return {
                 ...state,
                 isDeleted: false,
